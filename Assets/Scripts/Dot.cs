@@ -156,7 +156,7 @@ public class Dot : MonoBehaviour
             }
         }
 
-        if (row > 0 && row < board.width - 1)
+        if (row > 0 && row < board.height - 1)
         {
             var upDot1 = board.allDots[column, row + 1];
             var downDot1 = board.allDots[column, row - 1];
