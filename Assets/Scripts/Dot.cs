@@ -9,6 +9,7 @@ public class Dot : MonoBehaviour
     public int row;
     public int targetX;
     public int targetY;
+    public bool isMatched = false;
     private Board board;
     private GameObject otherDot;
     private Vector2 firstTouchPosition;
@@ -29,6 +30,12 @@ public class Dot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        findMatches();
+        if (isMatched)
+        {
+            var mySprite = GetComponent<SpriteRenderer>();
+            mySprite.color = new Color(1f, 1f, 1f, .2f);
+        }
         targetX = column;
         targetY = row;
         if (Mathf.Abs(targetX - transform.position.x) > .1)
@@ -104,6 +111,32 @@ public class Dot : MonoBehaviour
             otherDot = board.allDots[column, row - 1];
             otherDot.GetComponent<Dot>().row += 1;
             row -= 1;
+        }
+    }
+
+    void findMatches()
+    {
+        if (column > 0 && column < board.width - 1)
+        {
+            var leftDot1 = board.allDots[column - 1, row];
+            var rightDot1 = board.allDots[column + 1, row];
+            if (leftDot1.tag == gameObject.tag && rightDot1.tag == gameObject.tag)
+            {
+                leftDot1.GetComponent<Dot>().isMatched = true;
+                rightDot1.GetComponent<Dot>().isMatched = true;
+                isMatched = true;
+            }
+        }
+        if (row > 0 && row < board.width - 1)
+        {
+            var upDot1 = board.allDots[column, row + 1];
+            var downDot1 = board.allDots[column, row - 1];
+            if (upDot1.tag == gameObject.tag && downDot1.tag == gameObject.tag)
+            {
+                upDot1.GetComponent<Dot>().isMatched = true;
+                downDot1.GetComponent<Dot>().isMatched = true;
+                isMatched = true;
+            }
         }
     }
 }
