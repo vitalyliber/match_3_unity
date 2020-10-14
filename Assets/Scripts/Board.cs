@@ -31,11 +31,54 @@ public class Board : MonoBehaviour
                 backgroundTile.transform.SetParent(transform);
                 backgroundTile.name = "( " + i + ", " + j + " )";
                 var dotToUse = Random.Range(0, dots.Length);
+                int maxIterations = 0;
+                while (MatchesAt(i, j, dots[dotToUse]) && maxIterations < 100)
+                {
+                    dotToUse = Random.Range(0, dots.Length);
+                    maxIterations++;
+                }
+
                 var dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity);
                 dot.transform.SetParent(transform);
                 dot.name = "( " + i + ", " + j + " )";
                 allDots[i, j] = dot;
             }
         }
+    }
+
+    private bool MatchesAt(int column, int row, GameObject piece)
+    {
+        if (column > 1 && row > 1)
+        {
+            if (allDots[column - 1, row].CompareTag(piece.tag) || allDots[column - 2, row].CompareTag(piece.tag))
+            {
+                return true;
+            }
+
+            if (allDots[column, row - 1].CompareTag(piece.tag) || allDots[column, row - 2].CompareTag(piece.tag))
+            {
+                return true;
+            }
+        }
+        else if (column <= 1 || row <= 1)
+        {
+            if (row > 1)
+            {
+                if (allDots[column, row - 1].CompareTag(piece.tag) && allDots[column, row - 2].CompareTag(piece.tag))
+                {
+                    return true;
+                }
+            }
+
+            if (column > 1)
+            {
+                if (allDots[column - 1, row].CompareTag(piece.tag) && allDots[column - 2, row].CompareTag(piece.tag))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
